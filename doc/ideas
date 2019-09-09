@@ -1,0 +1,40 @@
+
+
+Baseline prediction
+===================
+
+Align all sequences from all clusters
+One-hot encode them
+Train classifier
+Predict on all
+Does the prediction make sense?
+Which amino acids are important?
+
+
+
+Refined prediction
+==================
+
+Align each cluster by itself
+Within cluster, remove all positions with an entrypy score above certain level (or use gblocks?)
+Align all shortened sequences from all clusters, get some sort of quality score of the alignment
+Loop through process with different cutoff levels
+Make plot of alignment score vs cutoff level
+
+Pick one cutoff level
+Validate on the cluster with good structures
+Look at whether this leads to finding amino acids in the active site
+
+Align all sequences
+One-hot encode each sequence in the alignment
+Train classifier to predict function
+Predict on all
+Does the prediction make sense?
+Which amino acids are important?
+Where those are in the structure of homology models?
+Are the amino acids in the active site?
+
+Possibly test a few of the sequences that should be specific in the lab to validate.
+
+
+Possibly make use of CATH for prediction as well?
