@@ -43,7 +43,7 @@ class _DrawingBaseClass(object):
 		self.id_list = sorted(list(self.data.keys()))
 		self.num_sequences = len(self.id_list)
 
-		self.fontsize = 7 #font size
+		self.fontsize = 6 #font size
 		self.x_spacing = 80 # space to the left
 		self.y_spacing = 40 # space on the top
 		self.text_color = text_color
@@ -198,7 +198,7 @@ class domains(_DrawingBaseClass):
 class substrate(_DrawingBaseClass):
 	'''
 	'''
-	def __init__(self, data, dend_data, filepath, subst_data=None, subst_data_replicate=None, main=None, group_dict=None, group_colors=None, property_dict=None, property_colors=None, text_color='#424242'):
+	def __init__(self, data, dend_data, filepath, subst_data=None, subst_data_replicate=None, main=None, group_dict=None, group_colors=None, legend_colors=None, property_dict=None, property_colors=None, text_color='#424242', substrate_order=None):
 		'''
 		Takes ...... input data .....
 		filepath specifies the output file
@@ -213,6 +213,11 @@ class substrate(_DrawingBaseClass):
 		self.group_dict = group_dict
 		self.property_dict = property_dict
 		self.property_colors = property_colors
+		self.legend_colors = legend_colors
+		self.substrate_order = substrate_order
+
+		# scale the y of the dendrogram
+		self._scale_dendrogam(scaling=0.5)
 
 		# calculate dendrogram size
 		self._calculate_dendrogram_size()
@@ -225,7 +230,7 @@ class substrate(_DrawingBaseClass):
 		self.page_y_size = 744.09
 
 		# space between dendrogram and actiity data
-		self.space_between_plots = 90
+		self.space_between_plots = 70
 
 		# dendrogram offset
 		self.x_offset = self.page_x_size / 2 - self.dend_x_size / 2
@@ -253,10 +258,13 @@ class substrate(_DrawingBaseClass):
 		self._draw_vertical_guides()
 
 		# draw the howizontal grey support lines
-		#self._draw_horizontal_guides()
+		self._draw_horizontal_guides()
 
 		# draw the dendrogram component
 		self._draw_dendrogram()
+
+		# draw the color legend
+		self._draw_legend()
 
 		# set title if present
 		if main is not None:
@@ -270,6 +278,15 @@ class substrate(_DrawingBaseClass):
 		self._convert_to_pdf()
 
 
+	def _scale_dendrogam(self, scaling=1.0):
+		'''
+		Scale the y of the dendrogram
+		'''
+		for i, polygon in enumerate(self.dend_data):
+			for j, point in enumerate(polygon):
+				x, y = point
+				self.dend_data[i][j] = (x, y*scaling)
+
 	def _calculate_dendrogram_size(self):
 		'''
 		Calculate how big the dendrogam is on the x- and y-axis
@@ -280,6 +297,7 @@ class substrate(_DrawingBaseClass):
 			point_data = []
 			for point in polygon:
 				x, y = point
+
 				all_x.append(x)
 				all_y.append(y)
 
@@ -344,9 +362,9 @@ class substrate(_DrawingBaseClass):
 		if self.subst_data is None:
 			y_start = self.page_y_size - self.y_spacing - self.dend_y_size - self.space_between_plots - self.rect_size*len(self.all_subst) - (len(self.indexes_used)-1)*self.rect_size
 		else:
-			y_start = self.page_y_size - self.y_spacing - self.dend_y_size - self.space_between_plots - self.rect_size*len(self.all_subst) - (len(self.indexes_used)+1)*self.rect_size
+			y_start = self.page_y_size - self.y_spacing - self.dend_y_size - self.space_between_plots - self.rect_size*len(self.all_subst) - (len(self.indexes_used))*self.rect_size
 
-		y_end = self.page_y_size - self.y_spacing - self.dend_y_size
+		y_end = self.page_y_size - self.y_spacing - self.dend_y_size - self.space_between_plots - (len(self.indexes_used))*self.rect_size
 
 		for uid in self.data_adjusted.keys():
 			label_x, label_y = (self.data_adjusted[uid])
@@ -368,7 +386,13 @@ class substrate(_DrawingBaseClass):
 			self.scene.add(wsvg.Line(start=(self.dend_min_x-self.rect_size/2, self.index_y_coordinates[len(self.indexes_used)]+self.rect_size), end=(self.dend_max_x+self.rect_size/2, self.index_y_coordinates[len(self.indexes_used)]+self.rect_size), line_color=guide_col, line_width=0.75))
 
 		self.scene.add(wsvg.Line(start=(self.dend_min_x-self.rect_size/2, self.index_y_coordinates[min(self.subst_index.values())]+self.rect_size), end=(self.dend_max_x+self.rect_size/2, self.index_y_coordinates[min(self.subst_index.values())]+self.rect_size), line_color=guide_col, line_width=0.75))
-		self.scene.add(wsvg.Line(start=(self.dend_min_x-self.rect_size/2, self.index_y_coordinates[max(self.subst_index.values())]), end=(self.dend_max_x+self.rect_size/2, self.index_y_coordinates[max(self.subst_index.values())]), line_color=guide_col, line_width=0.75))
+
+		for i in range(0, len(self.all_subst)):
+			x_start = self.dend_min_x-self.rect_size/2
+			y_start = self.index_y_coordinates[max(self.subst_index.values())] + self.rect_size*i
+			x_end = self.dend_max_x+self.rect_size/2
+			y_end = self.index_y_coordinates[max(self.subst_index.values())] + self.rect_size*i
+			self.scene.add(wsvg.Line(start=(x_start, y_start), end=(x_end, y_end), line_color=guide_col, line_width=0.75))
 
 
 	def _draw_dendrogram(self):
@@ -385,7 +409,7 @@ class substrate(_DrawingBaseClass):
 
 	def _draw_datapoint(self, index, identifier, plot_type='square', color='#FF5500'):
 		'''
-		Draw a datapoint at a specific inxex (rows) for a specific identifier (columns)
+		Draw a datapoint at a specific index (rows) for a specific identifier (columns)
 		'''
 		if identifier not in self.data_adjusted.keys():
 			return
@@ -412,7 +436,14 @@ class substrate(_DrawingBaseClass):
 		'''
 		x = self.dend_min_x
 		y = self.index_y_coordinates[index]
-		self.scene.add(wsvg.Text(text=text, origin=(x-self.rect_size, y+self.fontsize), angle=0, size=self.fontsize, weight="normal", color=color, anchor="end", align='end'))
+		self.scene.add(wsvg.Text(text=text,
+									origin=(x-self.rect_size, y+self.fontsize),
+									angle=225,
+									size=self.fontsize,
+									weight="normal",
+									color=color,
+									anchor="start",
+									align='end'))
 
 
 	def _assign_property_colors(self, prop):
@@ -472,31 +503,98 @@ class substrate(_DrawingBaseClass):
 		'''
 		# get a list of all substrates
 		plt_type = 'square'
-		self.all_subst = sorted(self.subst_data[list(self.subst_data.keys())[0]].keys())
+		if self.substrate_order is None:
+			self.all_subst = self.subst_data[list(self.subst_data.keys())[0]].keys()
+		else:
+			self.all_subst = self.substrate_order
 
 		# assign an index for these
-		self.subst_index = {k:v for k,v in zip(self.all_subst, range(len(self.indexes_used)+2, len(self.all_subst)+len(self.indexes_used)+2))}
+		self.subst_index = {k:v for k,v in zip(self.all_subst, range(len(self.indexes_used)+1, len(self.all_subst)+len(self.indexes_used)+1))}
 
 		# assign a color for each substrate
 		subst_color = {k:v for k,v in zip(self.all_subst, scales.rainbow(len(self.all_subst)))}
 
+
 		# add the substrate row labels
 		for subst in self.all_subst:
-			self._draw_row_label(index=self.subst_index[subst], text=subst, color=subst_color[subst])
+			self._draw_row_label(index=self.subst_index[subst], text=subst, color=self.text_color) #subst_color[subst]
 
 		# is there a repeat that should be plotted as well?
 		if self.subst_data_replicate is not None:
 			for uid in sorted(self.subst_data_replicate.keys()):
-				for subst in sorted(self.subst_data_replicate[uid]):
+				for subst in self.all_subst:
 					if self.subst_data_replicate[uid][subst] is True:
 						self._draw_datapoint(index=self.subst_index[subst], identifier=uid, color=subst_color[subst], plot_type='top')
+					elif type(self.subst_data_replicate[uid][subst]) is str:
+						self._draw_datapoint(index=self.subst_index[subst], identifier=uid, color=self.subst_data_replicate[uid][subst], plot_type='top')
+
 			plt_type = 'bottom'
 
-		# now draw the data
+		# now draw the dshouldata
 		for uid in sorted(self.subst_data.keys()):
-			for subst in sorted(self.subst_data[uid]):
+			for subst in self.all_subst:
 				if self.subst_data[uid][subst] is True:
 					self._draw_datapoint(index=self.subst_index[subst], identifier=uid, color=subst_color[subst], plot_type=plt_type)
+				elif type(self.subst_data[uid][subst]) is str:
+					self._draw_datapoint(index=self.subst_index[subst], identifier=uid, color=self.subst_data[uid][subst], plot_type=plt_type)
+
+
+
+	def _draw_legend(self):
+		'''
+		Draw the activity data legend
+		'''
+		start_x = self.dend_max_x + self.rect_size*1.5
+
+		data_start_index = len(self.property_colors.keys())
+		data_end_index = data_start_index + len(self.all_subst)
+		start_y = self.index_y_coordinates[data_start_index]
+		end_y = self.index_y_coordinates[data_end_index]
+
+		h = (start_y-end_y)/len(self.legend_colors)
+
+		# draw the boxes representing the scale
+		for i, col in enumerate(self.legend_colors):
+			self.scene.add(wsvg.Rectangle(origin=(start_x, start_y-h*i),
+			        height=h,
+					width=self.rect_size,
+					fill_color=col,
+					line_color=None,
+					line_width=0.0))
+
+			# add lines with text
+			if i in [0, 50, 100]:
+				self.scene.add(wsvg.Rectangle(origin=(start_x+self.rect_size, start_y-h*i),
+				        height=h,
+						width=self.rect_size*0.25,
+						fill_color='#000000',
+						line_color=None,
+						line_width=0.0))
+
+				self.scene.add(wsvg.Text(text=i, origin=(start_x+self.rect_size*2.0, start_y-h*i),
+								angle=-90,
+								size=self.fontsize,
+								weight="normal",
+								color=self.text_color,
+								anchor="middle", align='top'))
+
+			if i == 50:
+				self.scene.add(wsvg.Text(text='Activity (%)', origin=(start_x+self.rect_size*3.0, start_y-h*i),
+								angle=-90,
+								size=self.fontsize,
+								weight="normal",
+								color=self.text_color,
+								anchor="middle", align='top'))
+
+
+
+		#draw box around the scale
+		self.scene.add(wsvg.Rectangle(origin=(start_x, end_y+h-h/2),
+		        height=start_y-end_y+h,
+				width=self.rect_size,
+				fill_color=None,
+				line_color='#000000',
+				line_width=0.5))
 
 
 

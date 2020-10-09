@@ -1,0 +1,43 @@
+
+
+
+
+use api to get organisms with data for each EC
+=> make plot of top 10 orgs
+
+
+for each organism cross-reference with ncbi taxonomy to classify as eukaryote, bacterium, archaea or other
+=> make rug plot of relative percentages
+=> make histogram of relative percentages
+
+
+use clustered BRENDA data (90%?) and for each EC fasta file get organism and classify as eukaryote, bacterium, archaea or other
+=> make rug plot of relative percentages
+=> make histogram of relative percentages
+
+=> combine data and plot percentages of ec classes with both eukaryotes and bacteria that have data from both
+=> do the same with archaea
+
+
+=> Make pie or bar chart with superkingdom percentages for 1.1.3.8
+=> Encode 1.1.3.8 using unirep
+=> Make t-sne or mds plot of 1.1.3.8
+=> Plot superkingdom identity
+=> Plot cluster identity
+=> Plot which have been characterized
+=> Plot p-values for gaussian prediction
+=> Plot identity thing as I did with 15
+=> Plot which ones we selected
+Then move on to experiment data
+Soluble, active, etc
+Substrates tested
+Activities deteced
+The operon structure, possible shift in annotation
+Communalities between organisms? Some sort of Fischer test on phenotypes
+
+
+Do I have a well-behaved class that I can compare to?
+
+
+
+
