@@ -2,7 +2,7 @@
 """
 Get data from BRENDA
 
-Copyright (C) 2017  Martin Engqvist Lab
+Copyright (C) 2020  Martin Engqvist Lab
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
