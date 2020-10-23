@@ -4,12 +4,11 @@ channels:
   - defaults
   - conda-forge
 dependencies:
+  - python=3.7
   - numpy==1.18.1
   - pandas==1.0.1
   - biopython==1.76
-  - python=3.7
   - scikit-learn==0.20.0
-  - umap-learn=0.3.10
   - matplotlib==3.1.3
   - seaborn
   - jupyter
@@ -17,7 +16,11 @@ dependencies:
   - requests
   - fftw
   - cython
+  - cd-hit
+  - muscle
+  - tensorflow=1.15.0
+  - tqdm
   - pip
   - pip:
     - python-dotenv
-    - fitsne
+    - alfpy
