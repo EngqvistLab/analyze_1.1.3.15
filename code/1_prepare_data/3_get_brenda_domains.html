@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>1_get_domain_and_identity_info_for_seqs</title>
+<title>3_get_brenda_domains</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13077,7 +13077,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This notebook is for downloading up-to-date protein domain information for the 1.1.3.15 sequences.<br/><br/>Copyright (C) 2019  Martin Engqvist Lab<br/>This program is free software: you can redistribute it and/or modify<br/>it under the terms of the GNU General Public License as published by<br/>the Free Software Foundation, either version 3 of the License, or<br/>(at your option) any later version.<br/>This program is distributed in the hope that it will be useful,<br/>but WITHOUT ANY WARRANTY; without even the implied warranty of<br/>MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br/>GNU General Public License for more details.<br/>You should have received a copy of the GNU General Public License<br/>along with this program.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+<p>This notebook is identifying PFAM domains for all BRENDA sequences.<br/><br/>Copyright (C) 2020  Martin Engqvist Lab<br/>This program is free software: you can redistribute it and/or modify<br/>it under the terms of the GNU General Public License as published by<br/>the Free Software Foundation, either version 3 of the License, or<br/>(at your option) any later version.<br/>This program is distributed in the hope that it will be useful,<br/>but WITHOUT ANY WARRANTY; without even the implied warranty of<br/>MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br/>GNU General Public License for more details.<br/>You should have received a copy of the GNU General Public License<br/>along with this program.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
 
 </div>
 </div>
@@ -13123,17 +13123,11 @@ div#notebook {
 <span class="n">PICTURES</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">RESULTS</span><span class="p">,</span> <span class="s1">&#39;pictures&#39;</span><span class="p">)</span> <span class="c1"># picture output directory</span>
 
 
-<span class="n">folders</span> <span class="o">=</span> <span class="p">[</span><span class="n">join</span><span class="p">(</span><span class="n">RAW_EXTERNAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2017_1&#39;</span><span class="p">),</span> 
-           <span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;brenda_2017_1&#39;</span><span class="p">),</span> 
-           <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2017_1&#39;</span><span class="p">),</span> 
-           <span class="n">join</span><span class="p">(</span><span class="n">RAW_EXTERNAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">),</span> 
-           <span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">),</span> 
-           <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">)]</span>
-
-<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">folders</span><span class="p">:</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
+<span class="n">folder_name</span> <span class="o">=</span> <span class="s1">&#39;brenda_domains&#39;</span>
+<span class="k">if</span> <span class="n">folder_name</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+    <span class="c1">#make folders if they don&#39;t exist</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;BRENDA_for_paper&#39;</span><span class="p">,</span> <span class="n">folder_name</span><span class="p">)):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;BRENDA_for_paper&#39;</span><span class="p">,</span> <span class="n">folder_name</span><span class="p">))</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Standard variables loaded, you are good to go!&#39;</span><span class="p">)</span>
 </pre></div>
@@ -13166,16 +13160,20 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">re</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span><span class="p">,</span> <span class="n">exists</span><span class="p">,</span> <span class="n">getsize</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
 <span class="kn">from</span> <span class="nn">urllib.error</span> <span class="kn">import</span> <span class="n">URLError</span><span class="p">,</span> <span class="n">HTTPError</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">orgtools</span> <span class="kn">import</span> <span class="n">topfunctions</span>
+<span class="kn">import</span> <span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">SeqIO</span><span class="p">,</span> <span class="n">AlignIO</span>
-<span class="kn">from</span> <span class="nn">Bio.Align.Applications</span> <span class="kn">import</span> <span class="n">MuscleCommandline</span>
-<span class="kn">import</span> <span class="nn">io</span>
+
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 </pre></div>
 
     </div>
@@ -13186,110 +13184,30 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Extract-identifiers-from-the-2017.1-version-of-BRENDA">Extract identifiers from the 2017.1 version of BRENDA<a class="anchor-link" href="#Extract-identifiers-from-the-2017.1-version-of-BRENDA">&#182;</a></h3><p>Obtain information for these such as organism name, lineage, growth pH and growth temperature.</p>
+<h3 id="Download-Pfam-pre-calculated-domain-data">Download Pfam pre-calculated domain data<a class="anchor-link" href="#Download-Pfam-pre-calculated-domain-data">&#182;</a></h3><p>This file is large, roughly 250 GB when unzipped.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_uid_from_fasta</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Go through fasta file from BRENDA and extract the uid, organism and ec number.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;ftp://ftp.ebi.ac.uk/pub/databases/Pfam/releases/Pfam33.1/Pfam-A.full.uniprot.gz&#39;</span>
+<span class="n">outfile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">RAW_EXTERNAL</span><span class="p">,</span> <span class="s1">&#39;BRENDA_for_paper&#39;</span><span class="p">,</span> <span class="s1">&#39;Pfam-A.full.uniprot.gz&#39;</span><span class="p">)</span>
 
-    <span class="c1"># open file and go through it</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">outfile</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.gz&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)):</span>
+    <span class="c1"># download the hmm file</span>
+    <span class="n">my_cmd</span> <span class="o">=</span> <span class="s1">&#39;wget -O </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">my_cmd</span><span class="p">)</span>
 
-            <span class="c1"># only look at header lines</span>
-            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">):</span>
-                <span class="n">line_data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
-                <span class="n">uid</span> <span class="o">=</span> <span class="n">line_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">ec</span> <span class="o">=</span> <span class="n">line_data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-                <span class="n">org</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line_data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">2</span><span class="p">])</span>
-
-                <span class="c1"># add ec key if not present</span>
-                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ec</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">data</span><span class="p">[</span><span class="n">ec</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-
-                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="n">ec</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">org</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">data</span><span class="p">[</span><span class="n">ec</span><span class="p">][</span><span class="n">org</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-
-                <span class="c1"># add uid to data structure</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">ec</span><span class="p">][</span><span class="n">org</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">data</span>
-
-
-
-<span class="k">def</span> <span class="nf">write_outfile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Write the parsed data to an outfile.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;uid</span><span class="se">\t</span><span class="s1">ec</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">ec</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="k">for</span> <span class="n">org</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">ec</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">ec</span><span class="p">][</span><span class="n">org</span><span class="p">]:</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">ec</span><span class="p">))</span>
-
-
-
-<span class="k">def</span> <span class="nf">write_info_outfile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Write the parsed data to an outfile.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="c1"># first collect all organism names</span>
-    <span class="n">all_ids</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">ec</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-        <span class="k">for</span> <span class="n">org</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">ec</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="n">all_ids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">ec</span><span class="p">][</span><span class="n">org</span><span class="p">])</span>
-
-
-    <span class="c1"># get taxid and lineage data</span>
-    <span class="n">properties_object</span> <span class="o">=</span> <span class="n">topfunctions</span><span class="o">.</span><span class="n">Properties</span><span class="p">(</span><span class="n">all_ids</span><span class="p">)</span>
-    <span class="n">properties_object</span><span class="o">.</span><span class="n">flatfile</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-
-
-
-<span class="n">infile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;brenda_2017_1&#39;</span><span class="p">,</span> <span class="s1">&#39;1_1_3__BRENDA_sequences_filtered_2017_1.fasta&#39;</span><span class="p">)</span>
-<span class="n">outfile1</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2017_1&#39;</span><span class="p">,</span> <span class="s1">&#39;ec_uid_org_from_fasta_2017_1.tsv&#39;</span><span class="p">)</span>
-<span class="n">outfile2</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2017_1&#39;</span><span class="p">,</span> <span class="s1">&#39;1-1-3-n_identifier_info_2017_1.tsv&#39;</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">outfile1</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">outfile2</span><span class="p">)):</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">get_uid_from_fasta</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="n">infile</span><span class="p">)</span>
-    <span class="n">write_outfile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="n">outfile1</span><span class="p">)</span>
-    <span class="n">write_info_outfile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="n">outfile2</span><span class="p">)</span>
-
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Outfiles exist, skipping.&#39;</span><span class="p">)</span>
+    <span class="c1"># unzip file</span>
+    <span class="n">my_cmd</span> <span class="o">=</span> <span class="s1">&#39;gunzip </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">my_cmd</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Outfiles exist, skipping.
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -13297,8 +13215,57 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Extract-identifiers-from-the-2019.2-version-of-BRENDA">Extract identifiers from the 2019.2 version of BRENDA<a class="anchor-link" href="#Extract-identifiers-from-the-2019.2-version-of-BRENDA">&#182;</a></h3><p>Obtain information for these such as organism name, lineage, growth pH and growth temperature.</p>
+<h3 id="Get-all-uniprot-identifiers-from-fasta-files">Get all uniprot identifiers from fasta files<a class="anchor-link" href="#Get-all-uniprot-identifiers-from-fasta-files">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_identifiers</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function for distributing the files on a number of workers.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># define folder</span>
+    <span class="n">inpath</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;BRENDA_for_paper&#39;</span><span class="p">,</span> <span class="s1">&#39;ec_identity_clustering&#39;</span><span class="p">)</span>
 
+    <span class="c1"># run assemble a list of the file to run</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">inpath</span><span class="p">)):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fi</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;90_augmented.fasta&#39;</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># print(fi)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">inpath</span><span class="p">,</span> <span class="n">fi</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="c1"># only look at header lines</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">):</span>
+                    <span class="n">line_data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+                    <span class="n">uid</span> <span class="o">=</span> <span class="n">line_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+                    <span class="n">data</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> identifiers&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">get_identifiers</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Go-through-Pfam-file-to-find-the-domains">Go through Pfam file to find the domains<a class="anchor-link" href="#Go-through-Pfam-file-to-find-the-domains">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13307,66 +13274,94 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">make_fasta</span><span class="p">():</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_doms</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Go through and collect sequnces from 1.1.3.n and</span>
-<span class="sd">    assemble into a new file.</span>
+<span class="sd">    Try to find domains for the identifiers.</span>
+<span class="sd">    Uses pre-computed Pfam file.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">all_data</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">fi</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">RAW_EXTERNAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">,</span> <span class="s1">&#39;sequence_data&#39;</span><span class="p">))):</span>
-        <span class="k">if</span> <span class="n">fi</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;1.1.3.&#39;</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">RAW_EXTERNAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">,</span> <span class="s1">&#39;sequence_data&#39;</span><span class="p">,</span> <span class="n">fi</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">all_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">all_uid</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">start_found</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;latin-1&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span> <span class="c1">#latin-1 to deal with a small number of byte codes in the file</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># find beginning of a pfam domain record</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#=GF AC&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">start_found</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span> <span class="c1"># if I find two starts in a row something went wrong</span>
+                    <span class="n">pfam</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+                    <span class="n">start_found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">,</span> <span class="s1">&#39;1_1_3__BRENDA_sequences_2019_2.fasta&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">all_data</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span> <span class="c1"># skip other annotation fields</span>
+                <span class="k">continue</span>
 
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">):</span> <span class="c1"># if I find the end before the start something went wrong</span>
+                <span class="k">if</span> <span class="n">start_found</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">start_found</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span>
 
-
-<span class="k">def</span> <span class="nf">filter_fasta</span><span class="p">(</span><span class="n">min_len</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">max_len</span> <span class="o">=</span> <span class="mi">580</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Remove sequences that are too long or too short, also sequenes that have X in them&#39;&#39;&#39;</span>
-    <span class="n">infile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">,</span> <span class="s1">&#39;1_1_3__BRENDA_sequences_2019_2.fasta&#39;</span><span class="p">)</span>
-    <span class="n">outfile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">,</span> <span class="s1">&#39;1_1_3__BRENDA_sequences_filtered_2019_2.fasta&#39;</span><span class="p">)</span>
-
-    <span class="n">retained</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">removed_len</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">removed_x</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">removed_m</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s1">&#39;fasta&#39;</span><span class="p">):</span>
-            <span class="n">header</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">description</span>
-            <span class="n">seq</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-
-            <span class="k">if</span> <span class="n">min_len</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_len</span> <span class="ow">and</span> <span class="s1">&#39;x&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seq</span> <span class="ow">and</span> <span class="n">seq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>
-                <span class="n">retained</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&gt;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">seq</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="s1">&#39;x&#39;</span> <span class="ow">in</span> <span class="n">seq</span><span class="p">:</span>
-                <span class="n">removed_x</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="n">seq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>
-                <span class="n">removed_m</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">removed_len</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">uid</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">uid</span> <span class="ow">in</span> <span class="n">all_uid</span><span class="p">:</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pfam</span><span class="p">)</span>
+                    <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># sort the domains</span>
+    <span class="k">for</span> <span class="n">uid</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">uid</span><span class="p">])</span>
+                    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;found </span><span class="si">{}</span><span class="s1"> of </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_uid</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">data</span>
 
 
-<span class="c1"># create a fasta file with the 1.1.3.n sequences</span>
-<span class="n">make_fasta</span><span class="p">()</span>
 
-<span class="c1"># filter out sequences that are too short or too long</span>
-<span class="n">filter_fasta</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Write data to disk.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">outlines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">uid</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">outlines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\t</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">uid</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">uid</span><span class="p">])))</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outlines</span><span class="p">))</span>
 
 
-<span class="n">infile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">,</span> <span class="s1">&#39;1_1_3__BRENDA_sequences_filtered_2019_2.fasta&#39;</span><span class="p">)</span>
-<span class="n">outfile1</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">,</span> <span class="s1">&#39;ec_uid_org_from_fasta_2019_2.tsv&#39;</span><span class="p">)</span>
-<span class="n">outfile2</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">,</span> <span class="s1">&#39;1-1-3-n_identifier_info_2019_2.tsv&#39;</span><span class="p">)</span>
+        
+<span class="k">def</span> <span class="nf">load_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Get data from disk.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">data</span> <span class="o">=</span>  <span class="p">{}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">uid</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-<span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">outfile1</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">outfile2</span><span class="p">)):</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">get_uid_from_fasta</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="n">infile</span><span class="p">)</span>
-    <span class="n">write_outfile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="n">outfile1</span><span class="p">)</span>
-    <span class="n">write_info_outfile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="n">outfile2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">domains</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))]</span> <span class="c1"># convert PF01676.19 to PF01676</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span> <span class="o">=</span> <span class="n">domains</span>
+    <span class="k">return</span> <span class="n">data</span>
+        
+        
+<span class="c1"># parse the fasta files and get the uniprot identifiers</span>
+<span class="n">outfile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;BRENDA_for_paper&#39;</span><span class="p">,</span> <span class="s1">&#39;dom_temp_data.tsv&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">outfile</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">get_identifiers</span><span class="p">()</span>
 
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Outfiles exist, skipping.&#39;</span><span class="p">)</span>
+    <span class="c1"># parse the pfam file and get domains for the identifiers</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">get_doms</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">join</span><span class="p">(</span><span class="s1">&#39;brenda_domains&#39;</span><span class="p">,</span> <span class="s1">&#39;Pfam-A.full.uniprot&#39;</span><span class="p">))</span>
+
+    <span class="c1"># save data</span>
+    <span class="n">write_file</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
+    
+    
+<span class="c1"># how many do not have a domain?</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">load_file</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> sequences missing domain prediction&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">count</span><span class="p">([])))</span>
 </pre></div>
 
     </div>
@@ -13383,7 +13378,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Outfiles exist, skipping.
+<pre>172863 sequences missing domain prediction
 </pre>
 </div>
 </div>
@@ -13395,7 +13390,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Compute-identity-matrix-using-pairwise-alignments">Compute identity matrix using pairwise alignments<a class="anchor-link" href="#Compute-identity-matrix-using-pairwise-alignments">&#182;</a></h3>
+<h3 id="Query-UniProt-for-missing-domains,-but-only-for-the-characterized-sequences">Query UniProt for missing domains, but only for the characterized sequences<a class="anchor-link" href="#Query-UniProt-for-missing-domains,-but-only-for-the-characterized-sequences">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13404,175 +13399,34 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get a list of all selected</span>
-<span class="k">def</span> <span class="nf">get_sequences</span><span class="p">():</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Get all sequencs as a dictionary</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">seq_data</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">infile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;brenda_2017_1&#39;</span><span class="p">,</span> <span class="s1">&#39;1_1_3__BRENDA_sequences_filtered_2017_1.fasta&#39;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="s1">&#39;fasta&#39;</span><span class="p">):</span>
-        <span class="n">header</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">description</span>
-        <span class="n">seq</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">seq</span>
-        <span class="n">seq_data</span><span class="p">[</span><span class="n">header</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_characterized</span><span class="p">():</span>
+    <span class="c1"># get a dictionary of characterized identifiers from BRENDA</span>
+    <span class="n">characterized</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;BRENDA_for_paper&#39;</span><span class="p">,</span> <span class="s1">&#39;parsed_info&#39;</span><span class="p">,</span> <span class="s1">&#39;ec_data_uid_orgs.tsv&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">seq_data</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">ec</span><span class="p">,</span> <span class="n">org</span><span class="p">,</span> <span class="n">uid</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
 
-
-<span class="k">def</span> <span class="nf">pairwise_align</span><span class="p">(</span><span class="n">id1</span><span class="p">,</span> <span class="n">id2</span><span class="p">,</span> <span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Perform pairwise alignment.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">records</span> <span class="o">=</span> <span class="s1">&#39;&gt;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&gt;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">id1</span><span class="p">,</span> <span class="n">seq1</span><span class="p">,</span> <span class="n">id2</span><span class="p">,</span> <span class="n">seq2</span><span class="p">)</span> <span class="c1">#prepare &#39;virtual&#39; FASTA file</span>
-
-    <span class="n">records_handle</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">records</span><span class="p">)</span> <span class="c1">#turn string into a handle</span>
-    <span class="n">tempdata</span> <span class="o">=</span> <span class="n">records_handle</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
-    <span class="n">muscle_cline</span> <span class="o">=</span> <span class="n">MuscleCommandline</span><span class="p">()</span>
-    <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">muscle_cline</span><span class="p">(</span><span class="n">stdin</span><span class="o">=</span><span class="n">tempdata</span><span class="p">)</span>
-    <span class="n">aln</span> <span class="o">=</span> <span class="n">AlignIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">stdout</span><span class="p">),</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
-
-    <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">aln</span><span class="p">:</span>
-        <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">output</span>
-
-
-<span class="c1"># Get percent identity of the aligned sequences</span>
-<span class="k">def</span> <span class="nf">pair_ident</span><span class="p">(</span><span class="n">Seq1</span><span class="p">,</span> <span class="n">Seq2</span><span class="p">,</span> <span class="n">single_gaps</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Takes two aligned sequences and returns their percent identity.</span>
-<span class="sd">    Assumes that Seq1 and Seq2 are sequence strings</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="n">l</span><span class="o">=</span><span class="mf">0.0</span> <span class="c1"># counts alignment length, excluding identical gaps, but including single gaps</span>
-    <span class="n">n</span><span class="o">=</span><span class="mf">0.0</span> <span class="c1"># count number of single gaps</span>
-    <span class="n">i</span><span class="o">=</span><span class="mf">0.0</span> <span class="c1"># counts identity hits</span>
-
-
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Seq2</span><span class="p">)):</span>
-        <span class="k">if</span> <span class="n">Seq1</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span> <span class="ow">and</span> <span class="n">Seq2</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span> <span class="c1">#DON&#39;T count identical gaps towards alignment length</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">Seq2</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">Seq1</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span> <span class="c1">#count matches</span>
-            <span class="k">elif</span> <span class="n">Seq2</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span> <span class="ow">or</span> <span class="n">Seq1</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
-                <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span> <span class="c1">#count number of single gaps</span>
-            <span class="n">l</span> <span class="o">+=</span> <span class="mi">1</span> <span class="c1">#count total length with single gaps</span>
-
-    <span class="k">if</span> <span class="n">single_gaps</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span> <span class="c1">#include single gaps</span>
-        <span class="n">percent</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">/</span><span class="n">l</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#calculate identity</span>
-
-    <span class="k">elif</span> <span class="n">single_gaps</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span> <span class="c1">#exclude single gaps</span>
-        <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="n">l</span><span class="p">:</span>
-            <span class="n">percent</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">percent</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">/</span><span class="p">(</span><span class="n">l</span><span class="o">-</span><span class="n">n</span><span class="p">)),</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#calculate identity</span>
-
-    <span class="k">return</span> <span class="n">percent</span>
-
-
-<span class="k">def</span> <span class="nf">compute_matrix</span><span class="p">():</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Do pairwise alignments and compute identities.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="c1"># get all sequences</span>
-    <span class="n">seq_data</span> <span class="o">=</span> <span class="n">get_sequences</span><span class="p">()</span>
-
-    <span class="c1"># generate all pairs and align them</span>
-    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">identity_data</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">id1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">seq_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">id2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">seq_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
-                <span class="k">continue</span>
-
-            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">counter</span> <span class="o">%</span> <span class="mi">10000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> done&#39;</span> <span class="o">%</span> <span class="n">counter</span><span class="p">)</span>
-
-            <span class="n">seq1</span> <span class="o">=</span> <span class="n">seq_data</span><span class="p">[</span><span class="n">id1</span><span class="p">]</span>
-            <span class="n">seq2</span> <span class="o">=</span> <span class="n">seq_data</span><span class="p">[</span><span class="n">id2</span><span class="p">]</span>
-
-            <span class="c1"># keep only the uniprot identifiers</span>
-            <span class="n">uid1</span> <span class="o">=</span> <span class="n">id1</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">uid2</span> <span class="o">=</span> <span class="n">id2</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-            <span class="c1"># perform the alignment</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">pairwise_align</span><span class="p">(</span><span class="n">uid1</span><span class="p">,</span> <span class="n">uid2</span><span class="p">,</span> <span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">)</span>
-
-            <span class="n">aln_seq1</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">aln_seq2</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-
-            <span class="n">identity</span> <span class="o">=</span> <span class="n">pair_ident</span><span class="p">(</span><span class="n">Seq1</span><span class="o">=</span><span class="n">aln_seq1</span><span class="p">,</span> <span class="n">Seq2</span><span class="o">=</span><span class="n">aln_seq2</span><span class="p">,</span> <span class="n">single_gaps</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">identity_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uid1</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">identity_data</span><span class="p">[</span><span class="n">uid1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-
-            <span class="k">if</span> <span class="n">identity_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uid2</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">identity_data</span><span class="p">[</span><span class="n">uid2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-
-            <span class="n">identity_data</span><span class="p">[</span><span class="n">uid1</span><span class="p">][</span><span class="n">uid2</span><span class="p">]</span> <span class="o">=</span> <span class="n">identity</span>
-            <span class="n">identity_data</span><span class="p">[</span><span class="n">uid2</span><span class="p">][</span><span class="n">uid1</span><span class="p">]</span> <span class="o">=</span> <span class="n">identity</span>
+            <span class="k">if</span> <span class="n">characterized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ec</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">characterized</span><span class="p">[</span><span class="n">ec</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([])</span>
+            <span class="n">characterized</span><span class="p">[</span><span class="n">ec</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
             
-    <span class="k">return</span> <span class="n">identity_data</span>
+    <span class="c1"># get all characterized identifiers from SwissProt</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">INTERMEDIATE</span><span class="p">,</span> <span class="s1">&#39;swissprot_2020_02&#39;</span><span class="p">,</span> <span class="s1">&#39;SwissProt-2020_02-protein-evidence.tsv&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">uid</span><span class="p">,</span> <span class="n">ec</span><span class="p">,</span> <span class="n">org</span><span class="p">,</span> <span class="n">orgid</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">characterized</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ec</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">characterized</span><span class="p">[</span><span class="n">ec</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([])</span>
+            <span class="n">characterized</span><span class="p">[</span><span class="n">ec</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
+            
+    <span class="k">return</span> <span class="n">characterized</span>
 
 
-<span class="k">def</span> <span class="nf">save_identity_matrix_all</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Save the identity data as a flatfile matrix.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="c1"># Convert identity values to data frame and save to flatfile</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path_or_buf</span><span class="o">=</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
-
-
-
-<span class="n">outfile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2017_1&#39;</span><span class="p">,</span> <span class="s1">&#39;all_identity_matrix_ident.tsv&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">outfile</span><span class="p">):</span>
-    <span class="n">identity_data</span> <span class="o">=</span> <span class="n">compute_matrix</span><span class="p">()</span>
-    <span class="n">save_identity_matrix_all</span><span class="p">(</span><span class="n">identity_data</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="n">outfile</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Outfile exists, skipping.&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Outfile exists, skipping.
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Download-PFAM-domain-info-for-sequences-from-BRENDA-version-2017.1">Download PFAM domain info for sequences from BRENDA version 2017.1<a class="anchor-link" href="#Download-PFAM-domain-info-for-sequences-from-BRENDA-version-2017.1">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">dlfile</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">dlfile</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Download a web page if the corresponding file does not exist.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -13580,21 +13434,28 @@ div#notebook {
     <span class="c1"># Open the url</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">out_path</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">out_path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">out_path</span><span class="p">):</span>
+<span class="c1">#             print(&#39;already on disk &#39; + url)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+            
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">out_path</span><span class="p">):</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;downloading &quot;</span> <span class="o">+</span> <span class="n">url</span><span class="p">)</span>
 
             <span class="c1"># Open local file for writing</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">local_file</span><span class="p">:</span>
                 <span class="n">local_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
 
     <span class="c1">#handle errors</span>
     <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;HTTP Error:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
     
     <span class="k">except</span> <span class="n">URLError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;URL Error:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
         
 
 <span class="k">def</span> <span class="nf">get_pfam_from_file</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
@@ -13621,7 +13482,7 @@ div#notebook {
         
     
     
-<span class="k">def</span> <span class="nf">get_pfam_for_uids</span><span class="p">(</span><span class="n">uids</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_pfam_for_uids</span><span class="p">(</span><span class="n">uids</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Query the UniProt database to get protein domains for </span>
 <span class="sd">    a list of protein identifiers.</span>
@@ -13629,11 +13490,13 @@ div#notebook {
 
     <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;uid&#39;</span><span class="p">:[],</span> <span class="s1">&#39;pfam&#39;</span><span class="p">:[]}</span>
 
-    <span class="k">for</span> <span class="n">uid</span> <span class="ow">in</span> <span class="n">uids</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">uid</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">uids</span><span class="p">):</span>
 
         <span class="c1"># download uniprot file</span>
         <span class="n">uniprot_url</span> <span class="o">=</span> <span class="s1">&#39;https://www.uniprot.org/uniprot/&#39;</span>
-        <span class="n">dlfile</span><span class="p">(</span><span class="n">folder</span><span class="o">=</span><span class="n">filepath</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_uniprot.html&#39;</span> <span class="o">%</span> <span class="n">uid</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">uniprot_url</span><span class="o">+</span><span class="n">uid</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">dlfile</span><span class="p">(</span><span class="n">folder</span><span class="o">=</span><span class="n">filepath</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_uniprot.html&#39;</span> <span class="o">%</span> <span class="n">uid</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">uniprot_url</span><span class="o">+</span><span class="n">uid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">continue</span>
 
         <span class="c1"># query uniprot file</span>
         <span class="n">pfam_ids</span> <span class="o">=</span> <span class="n">get_pfam_from_file</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_uniprot.html&#39;</span> <span class="o">%</span> <span class="n">uid</span><span class="p">))</span>
@@ -13642,7 +13505,9 @@ div#notebook {
         <span class="c1"># download uniparc overview file</span>
         <span class="n">uniparc_url</span> <span class="o">=</span> <span class="s1">&#39;https://www.uniprot.org/uniparc/?query=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">uid</span>
         <span class="n">overview_filename</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_uniparc_overview.html&#39;</span> <span class="o">%</span> <span class="n">uid</span><span class="p">)</span>
-        <span class="n">dlfile</span><span class="p">(</span><span class="n">folder</span><span class="o">=</span><span class="n">filepath</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_uniparc_overview.html&#39;</span> <span class="o">%</span> <span class="n">uid</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">uniparc_url</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">dlfile</span><span class="p">(</span><span class="n">folder</span><span class="o">=</span><span class="n">filepath</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_uniparc_overview.html&#39;</span> <span class="o">%</span> <span class="n">uid</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">uniparc_url</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">continue</span>
 
         <span class="c1"># find the reference for the alternate identifier and download that file</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">overview_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -13650,7 +13515,9 @@ div#notebook {
 
             <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;class=&quot;entryID&quot;&gt;&lt;a href=&quot;/uniparc/([a-zA-Z0-9]+)&quot;&gt;&#39;</span><span class="p">,</span> <span class="n">document</span><span class="p">)</span>
             <span class="n">new_target_url</span> <span class="o">=</span> <span class="s1">&#39;https://www.uniprot.org/uniparc/</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">dlfile</span><span class="p">(</span><span class="n">folder</span><span class="o">=</span><span class="n">filepath</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_uniparc.html&#39;</span> <span class="o">%</span> <span class="n">uid</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">new_target_url</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">dlfile</span><span class="p">(</span><span class="n">folder</span><span class="o">=</span><span class="n">filepath</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_uniparc.html&#39;</span> <span class="o">%</span> <span class="n">uid</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">new_target_url</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">continue</span>
 
         <span class="c1"># query uniparc file</span>
         <span class="n">pfam_ids2</span> <span class="o">=</span> <span class="n">get_pfam_from_file</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_uniparc.html&#39;</span> <span class="o">%</span> <span class="n">uid</span><span class="p">))</span>
@@ -13660,42 +13527,25 @@ div#notebook {
         <span class="n">data</span><span class="p">[</span><span class="s1">&#39;pfam&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">pfam_ids</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">pfam_ids2</span><span class="p">)))))</span>
 
     
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> 
-</pre></div>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-    </div>
-</div>
-</div>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">outfile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2017_1&#39;</span><span class="p">,</span> <span class="s1">&#39;pfam_info_2017_1.tsv&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">outfile</span><span class="p">):</span>
-    <span class="c1"># load a list of the identifiers I want</span>
-    <span class="n">filepath</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2017_1&#39;</span><span class="p">,</span> <span class="s1">&#39;ec_uid_org_from_fasta_2017_1.tsv&#39;</span><span class="p">)</span>
-    <span class="n">uid_ec</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
 
-    <span class="c1"># only keep 1.1.3.15</span>
-    <span class="n">data_subset</span> <span class="o">=</span> <span class="n">uid_ec</span><span class="p">[</span><span class="n">uid_ec</span><span class="p">[</span><span class="s1">&#39;ec&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;1.1.3.15&#39;</span><span class="p">]</span>
-    <span class="n">uids</span> <span class="o">=</span> <span class="n">data_subset</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">values</span>
-    
-    <span class="n">display</span><span class="p">(</span><span class="n">data_subset</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-    <span class="n">display</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">uids</span><span class="p">))</span>
 
-    <span class="c1"># download uniparc and uniprot for each</span>
-    <span class="n">filepath</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">RAW_EXTERNAL</span><span class="p">,</span> <span class="s1">&#39;pfam&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-    
-    <span class="n">data_frame</span> <span class="o">=</span> <span class="n">get_pfam_for_uids</span><span class="p">(</span><span class="n">uids</span><span class="p">)</span>
-    <span class="n">data_frame</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Outfile exists, skipping.&#39;</span><span class="p">)</span>
+<span class="c1"># get characterized identfiers</span>
+<span class="n">characterized</span> <span class="o">=</span> <span class="n">get_characterized</span><span class="p">()</span>
+<span class="n">uids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([])</span>
+<span class="k">for</span> <span class="n">ec</span> <span class="ow">in</span> <span class="n">characterized</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">uids</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">characterized</span><span class="p">[</span><span class="n">ec</span><span class="p">])</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">uids</span><span class="p">)</span>
+
+<span class="c1"># which characterized identifiers were not present in the Pfam file?</span>
+<span class="n">missing</span> <span class="o">=</span> <span class="n">uids</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">))</span>
+
+<span class="c1"># now download these</span>
+<span class="n">filepath</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">RAW_EXTERNAL</span><span class="p">,</span> <span class="s1">&#39;pfam&#39;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">get_pfam_for_uids</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">missing</span><span class="p">)),</span> <span class="n">filepath</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13711,8 +13561,29 @@ div#notebook {
     <div class="prompt"></div>
 
 
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>  2%|▏         | 8/337 [00:00&lt;00:04, 75.74it/s]</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Outfile exists, skipping.
+<pre>337
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>100%|██████████| 337/337 [00:01&lt;00:00, 175.25it/s]
 </pre>
 </div>
 </div>
@@ -13724,38 +13595,24 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Download-PFAM-domain-info-for-sequences-from-BRENDA-version-2019.2">Download PFAM domain info for sequences from BRENDA version 2019.2<a class="anchor-link" href="#Download-PFAM-domain-info-for-sequences-from-BRENDA-version-2019.2">&#182;</a></h3>
+<h3 id="Add-the-missing-domains-to-the-main-data-dictionary">Add the missing domains to the main data dictionary<a class="anchor-link" href="#Add-the-missing-domains-to-the-main-data-dictionary">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">outfile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">,</span> <span class="s1">&#39;pfam_info_2019_2.tsv&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">outfile</span><span class="p">):</span>
-    <span class="c1"># load a list of the identifiers I want</span>
-    <span class="n">filepath</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">,</span> <span class="s1">&#39;ec_uid_org_from_fasta_2019_2.tsv&#39;</span><span class="p">)</span>
-    <span class="n">uid_ec</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_missing</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s1">&#39;list&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data_missing</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">],</span> <span class="n">data_missing</span><span class="p">[</span><span class="s1">&#39;pfam&#39;</span><span class="p">]):</span>
+    <span class="n">domains</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">domains</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]:</span>
+        <span class="n">domains</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">domains</span>
 
-    <span class="c1"># only keep 1.1.3.15</span>
-    <span class="n">data_subset</span> <span class="o">=</span> <span class="n">uid_ec</span><span class="p">[</span><span class="n">uid_ec</span><span class="p">[</span><span class="s1">&#39;ec&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;1.1.3.15&#39;</span><span class="p">]</span>
-    <span class="n">uids</span> <span class="o">=</span> <span class="n">data_subset</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">values</span>
-    
-    <span class="n">display</span><span class="p">(</span><span class="n">data_subset</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-    <span class="n">display</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">uids</span><span class="p">))</span>
-
-    <span class="c1"># download uniparc and uniprot for each</span>
-    <span class="n">filepath</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">RAW_EXTERNAL</span><span class="p">,</span> <span class="s1">&#39;pfam&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
-    
-    <span class="n">data_frame</span> <span class="o">=</span> <span class="n">get_pfam_for_uids</span><span class="p">(</span><span class="n">uids</span><span class="p">)</span>
-    <span class="n">data_frame</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Outfile exists, skipping.&#39;</span><span class="p">)</span>
+<span class="c1"># how many do not have a domain?</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> sequences missing domain prediction&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">count</span><span class="p">([])))</span>
 </pre></div>
 
     </div>
@@ -13772,11 +13629,32 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Outfile exists, skipping.
+<pre>172890 sequences missing domain prediction
 </pre>
 </div>
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Save-the-results">Save the results<a class="anchor-link" href="#Save-the-results">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">outfile</span> <span class="o">=</span> <span class="n">join</span><span class="p">(</span><span class="n">FINAL</span><span class="p">,</span> <span class="s1">&#39;brenda_2019_2&#39;</span><span class="p">,</span> <span class="s1">&#39;all_brenda_domain_data.tsv&#39;</span><span class="p">)</span>
+<span class="n">write_file</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
