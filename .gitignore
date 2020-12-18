@@ -4,6 +4,7 @@ data/raw_external/*
 data/raw_internal/*
 !data/raw_internal/README.md
 data/intermediate/*
+data/final/*
 
 # the scratch folder which, by definition should not contain anything worth saving
 scratch/
