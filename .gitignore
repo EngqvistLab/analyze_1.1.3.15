@@ -1,7 +1,7 @@
 # folders holding data (which tends to be too big for git), bot do sync the readme files
-data/raw_external/
+data/raw_external/*
 !data/raw_external/README.md
-data/intermediate/
+data/intermediate/*
 !data/intermediate/README.md
 data/final/brenda_2019_2/all_brenda_domain_data.tsv
 
