@@ -26,7 +26,7 @@ dependencies:
   - pip:
     - python-dotenv
     - alfpy==1.0.6
-    - git+https://github.com/mengqvist/wsvg/archive/v0.1.3.tar.gz
-    - git+https://github.com/EngqvistLab/brenparse/archive/v0.1.1.tar.gz
-    - git+https://github.com/EngqvistLab/orgtools/archive/v0.1.1.tar.gz
-    - git+https://github.com/EngqvistLab/UniRep50/archive/v0.1.2.tar.gz
+    - git+https://github.com/mengqvist/wsvg.git@v0.1.3
+    - git+https://github.com/EngqvistLab/brenparse.git@v0.1.1
+    - git+https://github.com/EngqvistLab/orgtools.git@v0.1.1
+    - git+https://github.com/EngqvistLab/UniRep50.git@v0.1.3
