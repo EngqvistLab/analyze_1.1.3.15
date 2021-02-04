@@ -2,7 +2,7 @@
 """
 This library draws visualizations from enzyme data.
 
-Copyright (C) 2017  Martin Engqvist Lab
+Copyright (C) 2019-2021  Martin Engqvist Lab
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -18,8 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #### Your code here ####
 
-import wsvg
-from colcol import scales
+from wsvg import svg, scales
 import math
 import os
 
@@ -85,13 +84,13 @@ class _DrawingBaseClass(object):
 		'''
 		Start an SVG scene to which plotting elements can be added.
 		'''
-		self.scene = wsvg.Scene(name=self.filepath, size=(self.page_x_size, self.page_y_size))
+		self.scene = svg.Scene(name=self.filepath, size=(self.page_x_size, self.page_y_size))
 
 
 	def _title(self):
 		'''
 		'''
-		self.scene.add(wsvg.Text(text=self.main, origin=(self.page_x_size/2, self.y_spacing/1.5), angle=0, size=self.fontsize*1.5, weight="bold", color=self.text_color, anchor="center", align='center'))
+		self.scene.add(svg.Text(text=self.main, origin=(self.page_x_size/2, self.y_spacing/1.5), angle=0, size=self.fontsize*1.5, weight="bold", color=self.text_color, anchor="center", align='center'))
 
 
 	def _stop_plotting(self):
@@ -370,9 +369,9 @@ class substrate(_DrawingBaseClass):
 			label_x, label_y = (self.data_adjusted[uid])
 			start = (label_x-self.rect_size/2, y_start)
 			end = (label_x-self.rect_size/2, y_end)
-			self.scene.add(wsvg.Line(start=start, end=end, line_color=guide_col, line_width=0.75))
+			self.scene.add(svg.Line(start=start, end=end, line_color=guide_col, line_width=0.75))
 
-		self.scene.add(wsvg.Line(start=(self.dend_max_x+self.rect_size/2, y_start), end=(self.dend_max_x+self.rect_size/2, y_end), line_color=guide_col, line_width=0.75))
+		self.scene.add(svg.Line(start=(self.dend_max_x+self.rect_size/2, y_start), end=(self.dend_max_x+self.rect_size/2, y_end), line_color=guide_col, line_width=0.75))
 
 
 	def _draw_horizontal_guides(self):
@@ -382,17 +381,17 @@ class substrate(_DrawingBaseClass):
 		guide_col = '#DDDDDD'
 
 		if self.property_dict is not None:
-			self.scene.add(wsvg.Line(start=(self.dend_min_x-self.rect_size/2, self.index_y_coordinates[0]+self.rect_size), end=(self.dend_max_x+self.rect_size/2, self.index_y_coordinates[0]+self.rect_size), line_color=guide_col, line_width=0.75))
-			self.scene.add(wsvg.Line(start=(self.dend_min_x-self.rect_size/2, self.index_y_coordinates[len(self.indexes_used)]+self.rect_size), end=(self.dend_max_x+self.rect_size/2, self.index_y_coordinates[len(self.indexes_used)]+self.rect_size), line_color=guide_col, line_width=0.75))
+			self.scene.add(svg.Line(start=(self.dend_min_x-self.rect_size/2, self.index_y_coordinates[0]+self.rect_size), end=(self.dend_max_x+self.rect_size/2, self.index_y_coordinates[0]+self.rect_size), line_color=guide_col, line_width=0.75))
+			self.scene.add(svg.Line(start=(self.dend_min_x-self.rect_size/2, self.index_y_coordinates[len(self.indexes_used)]+self.rect_size), end=(self.dend_max_x+self.rect_size/2, self.index_y_coordinates[len(self.indexes_used)]+self.rect_size), line_color=guide_col, line_width=0.75))
 
-		self.scene.add(wsvg.Line(start=(self.dend_min_x-self.rect_size/2, self.index_y_coordinates[min(self.subst_index.values())]+self.rect_size), end=(self.dend_max_x+self.rect_size/2, self.index_y_coordinates[min(self.subst_index.values())]+self.rect_size), line_color=guide_col, line_width=0.75))
+		self.scene.add(svg.Line(start=(self.dend_min_x-self.rect_size/2, self.index_y_coordinates[min(self.subst_index.values())]+self.rect_size), end=(self.dend_max_x+self.rect_size/2, self.index_y_coordinates[min(self.subst_index.values())]+self.rect_size), line_color=guide_col, line_width=0.75))
 
 		for i in range(0, len(self.all_subst)):
 			x_start = self.dend_min_x-self.rect_size/2
 			y_start = self.index_y_coordinates[max(self.subst_index.values())] + self.rect_size*i
 			x_end = self.dend_max_x+self.rect_size/2
 			y_end = self.index_y_coordinates[max(self.subst_index.values())] + self.rect_size*i
-			self.scene.add(wsvg.Line(start=(x_start, y_start), end=(x_end, y_end), line_color=guide_col, line_width=0.75))
+			self.scene.add(svg.Line(start=(x_start, y_start), end=(x_end, y_end), line_color=guide_col, line_width=0.75))
 
 
 	def _draw_dendrogram(self):
@@ -400,11 +399,11 @@ class substrate(_DrawingBaseClass):
 		Draw dendrogram with the labels
 		'''
 		for polygon in self.dend_data_adjusted:
-			self.scene.add(wsvg.PolyLine(points=polygon, fill_color=None, line_color='#111111', line_width=1))
+			self.scene.add(svg.PolyLine(points=polygon, fill_color=None, line_color='#111111', line_width=1))
 
 		for key in sorted(self.data_adjusted.keys()):
 			x, y = self.data_adjusted[key]
-			self.scene.add(wsvg.Text(text=key, origin=(x+self.fontsize*0.30, y-self.fontsize), angle=-90, size=self.fontsize, weight="normal", color=self.text_color, anchor="start", align='start'))
+			self.scene.add(svg.Text(text=key, origin=(x+self.fontsize*0.30, y-self.fontsize), angle=-90, size=self.fontsize, weight="normal", color=self.text_color, anchor="start", align='start'))
 
 
 	def _draw_datapoint(self, index, identifier, plot_type='square', color='#FF5500'):
@@ -418,13 +417,13 @@ class substrate(_DrawingBaseClass):
 		y = self.index_y_coordinates[index]
 
 		if plot_type == 'square':
-			self.scene.add(wsvg.Rectangle(origin=(x-self.rect_size/2, y), height=self.rect_size, width=self.rect_size, fill_color=color, line_color=color, line_width=0.5))
+			self.scene.add(svg.Rectangle(origin=(x-self.rect_size/2, y), height=self.rect_size, width=self.rect_size, fill_color=color, line_color=color, line_width=0.5))
 
 		elif plot_type == 'bottom':
-			self.scene.add(wsvg.PolyLine(points=[(x+self.rect_size/2, y+self.rect_size),(x-self.rect_size/2, y+self.rect_size), (x-self.rect_size/2, y)], closed=True, fill_color=color, line_color=color, line_width=0.5))
+			self.scene.add(svg.PolyLine(points=[(x+self.rect_size/2, y+self.rect_size),(x-self.rect_size/2, y+self.rect_size), (x-self.rect_size/2, y)], closed=True, fill_color=color, line_color=color, line_width=0.5))
 
 		elif plot_type == 'top':
-			self.scene.add(wsvg.PolyLine(points=[(x-self.rect_size/2, y), (x+self.rect_size/2, y), (x+self.rect_size/2, y+self.rect_size)], closed=True, fill_color=color, line_color=color, line_width=0.5))
+			self.scene.add(svg.PolyLine(points=[(x-self.rect_size/2, y), (x+self.rect_size/2, y), (x+self.rect_size/2, y+self.rect_size)], closed=True, fill_color=color, line_color=color, line_width=0.5))
 
 		else:
 			raise ValueError
@@ -436,7 +435,7 @@ class substrate(_DrawingBaseClass):
 		'''
 		x = self.dend_min_x
 		y = self.index_y_coordinates[index]
-		self.scene.add(wsvg.Text(text=text,
+		self.scene.add(svg.Text(text=text,
 									origin=(x-self.rect_size, y+self.fontsize),
 									angle=225,
 									size=self.fontsize,
@@ -555,7 +554,7 @@ class substrate(_DrawingBaseClass):
 
 		# draw the boxes representing the scale
 		for i, col in enumerate(self.legend_colors):
-			self.scene.add(wsvg.Rectangle(origin=(start_x, start_y-h*i),
+			self.scene.add(svg.Rectangle(origin=(start_x, start_y-h*i),
 			        height=h,
 					width=self.rect_size,
 					fill_color=col,
@@ -564,14 +563,14 @@ class substrate(_DrawingBaseClass):
 
 			# add lines with text
 			if i in [0, 50, 100]:
-				self.scene.add(wsvg.Rectangle(origin=(start_x+self.rect_size, start_y-h*i),
+				self.scene.add(svg.Rectangle(origin=(start_x+self.rect_size, start_y-h*i),
 				        height=h,
 						width=self.rect_size*0.25,
 						fill_color='#000000',
 						line_color=None,
 						line_width=0.0))
 
-				self.scene.add(wsvg.Text(text=i, origin=(start_x+self.rect_size*2.0, start_y-h*i),
+				self.scene.add(svg.Text(text=i, origin=(start_x+self.rect_size*2.0, start_y-h*i),
 								angle=-90,
 								size=self.fontsize,
 								weight="normal",
@@ -579,7 +578,7 @@ class substrate(_DrawingBaseClass):
 								anchor="middle", align='top'))
 
 			if i == 50:
-				self.scene.add(wsvg.Text(text='Activity (%)', origin=(start_x+self.rect_size*3.0, start_y-h*i),
+				self.scene.add(svg.Text(text='Activity (%)', origin=(start_x+self.rect_size*3.0, start_y-h*i),
 								angle=-90,
 								size=self.fontsize,
 								weight="normal",
@@ -589,7 +588,7 @@ class substrate(_DrawingBaseClass):
 
 
 		#draw box around the scale
-		self.scene.add(wsvg.Rectangle(origin=(start_x, end_y+h-h/2),
+		self.scene.add(svg.Rectangle(origin=(start_x, end_y+h-h/2),
 		        height=start_y-end_y+h,
 				width=self.rect_size,
 				fill_color=None,
@@ -695,32 +694,32 @@ class alignment(_DrawingBaseClass):
 
 				#draw the group, if applicable
 				if self.usegroups is True:
-					self.scene.add(wsvg.Rectangle(origin=(x+self.right_text_offset+20, y), height=self.rect_size, width=self.rect_size/2, fill_color=self.group_colors[current_group_num], line_color=self.group_colors[current_group_num], line_width=0.5))
-					self.scene.add(wsvg.Text(text=current_group, origin=(self.x_spacing + self.right_text_offset + 30, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="normal", color=self.text_color, anchor="start", align='start'))
+					self.scene.add(svg.Rectangle(origin=(x+self.right_text_offset+20, y), height=self.rect_size, width=self.rect_size/2, fill_color=self.group_colors[current_group_num], line_color=self.group_colors[current_group_num], line_width=0.5))
+					self.scene.add(svg.Text(text=current_group, origin=(self.x_spacing + self.right_text_offset + 30, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="normal", color=self.text_color, anchor="start", align='start'))
 
 				# add the identifier
-				self.scene.add(wsvg.Text(text=uid, origin=(x+self.rect_size/2.0 - 30, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="normal", color=self.text_color, anchor="end", align='end'))
+				self.scene.add(svg.Text(text=uid, origin=(x+self.rect_size/2.0 - 30, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="normal", color=self.text_color, anchor="end", align='end'))
 
 				# add left numbering
 				if i == 0:
 					num = 1
 				else:
 					num = residue_number
-				self.scene.add(wsvg.Text(text=num, origin=(x+self.left_text_offset, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="normal", color=self.text_color, anchor="end", align='end'))
+				self.scene.add(svg.Text(text=num, origin=(x+self.left_text_offset, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="normal", color=self.text_color, anchor="end", align='end'))
 
 			# add right numbering
 			if (i+1) % self.residues_per_line == 0:
-				self.scene.add(wsvg.Text(text=residue_number, origin=(self.x_spacing + self.right_text_offset, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="normal", color=self.text_color, anchor="start", align='start'))
+				self.scene.add(svg.Text(text=residue_number, origin=(self.x_spacing + self.right_text_offset, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="normal", color=self.text_color, anchor="start", align='start'))
 
 			# increment x-position by 1
 			x += self.rect_size
 
 			# actually draw the box for the individual amino acid
-			self.scene.add(wsvg.Rectangle(origin=(x, y), height=self.rect_size, width=self.rect_size, fill_color=rect_color, line_color=rect_color, line_width=0.5))
-			self.scene.add(wsvg.Text(text=text, origin=(x+self.rect_size/2.0, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="bold", color=self.text_color, anchor="middle", align='center'))
+			self.scene.add(svg.Rectangle(origin=(x, y), height=self.rect_size, width=self.rect_size, fill_color=rect_color, line_color=rect_color, line_width=0.5))
+			self.scene.add(svg.Text(text=text, origin=(x+self.rect_size/2.0, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="bold", color=self.text_color, anchor="middle", align='center'))
 
 		# add final right number
-		self.scene.add(wsvg.Text(text=residue_number, origin=(x + 10, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="normal", color=self.text_color, anchor="start", align='start'))
+		self.scene.add(svg.Text(text=residue_number, origin=(x + 10, y+self.fontsize*0.80), angle=0, size=self.fontsize, weight="normal", color=self.text_color, anchor="start", align='start'))
 
 
 #

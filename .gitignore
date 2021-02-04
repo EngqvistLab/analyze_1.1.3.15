@@ -1,10 +1,7 @@
 # folders holding data (which tends to be too big for git), bot do sync the readme files
-data/raw_external/*
-!data/raw_external/README.md
-data/raw_internal/*
-!data/raw_internal/README.md
-data/intermediate/*
-data/final/*
+data/raw_external/
+data/intermediate/
+data/final/brenda_2019_2/all_brenda_domain_data.tsv
 
 # the scratch folder which, by definition should not contain anything worth saving
 scratch/
