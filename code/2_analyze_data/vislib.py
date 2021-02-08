@@ -18,9 +18,59 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #### Your code here ####
 
-from wsvg import svg, scales
+from wsvg import svg, convert
 import math
 import os
+import colorsys
+
+
+def rainbow(step_num=10, start_col='#ADFF2F', clockwise=True, full=False):
+    '''
+    Returns the entire color wheel starting with the input color.
+    number specifies how many new ones to return.
+    '''
+    start_col = convert.Color(start_col) # convert input color to a color object
+    assert type(step_num) is int, 'Error, the input variable "step_num" must be an integer.'
+    assert (1 <= step_num and step_num <= 1000), 'Error, the input variable "step_num" must be between 2 and 1000'
+
+    if step_num == 1:
+        return [start_col]
+
+    #assign to  variables
+    r, g, b = start_col.rgb()
+
+    # Convert to [0, 1]
+    r, g, b = [x/255. for x in [r, g, b]]
+
+    # RGB -> HLS
+    hue, lightness, saturation = convert.colorsys.rgb_to_hls(r, g, b)
+
+    # Rotation by defined number of degrees
+    if full is False: # do NOT make the two ends of the scale "meet"
+        angle = (280/float(step_num))/360.0
+    elif full is True: # DO make the two ends of the scale "meet"
+        angle = (360/float(step_num))/360.0
+    else:
+        raise ValueError
+
+    if clockwise is False:
+        h_list = [(hue+ang) % 1 for ang in [angle*s for s in range(step_num)]]
+
+    elif clockwise is True:
+        h_list = [(hue+ang) % 1 for ang in [-angle*s for s in range(step_num)]]
+
+    else:
+        raise ValueError
+
+    colors = [[int(round(x*255)) for x in convert.colorsys.hls_to_rgb(h, lightness, saturation)] for h in h_list] # HLS -> new RGB
+    colors = [tuple(s) for s in colors]
+
+    #if the input was hex, convert it back
+    if start_col.get_format() == 'hex':
+        colors = [convert.rgb_to_hex(s) for s in colors]
+
+    #return as color objects
+    return [convert.Color(s) for s in colors]
 
 
 
@@ -54,7 +104,7 @@ class _DrawingBaseClass(object):
 
 			# assign group colors
 			if group_colors is None:
-				self.group_colors = scales.rainbow(self.number_of_groups)
+				self.group_colors = rainbow(self.number_of_groups)
 			else:
 				self.group_colors = group_colors
 
@@ -457,8 +507,8 @@ class substrate(_DrawingBaseClass):
 		# count their number and get the equivalent number of colors
 		all_vals = sorted(all_vals)
 		num_vals = len(all_vals)
-		colors = scales.rainbow(num_vals, start_col='#ADFF2F', clockwise=True, full=True)[0::2]
-		colors.extend(scales.rainbow(num_vals, start_col='#6EA31E', clockwise=True, full=True)[1::2])
+		colors = rainbow(num_vals, start_col='#ADFF2F', clockwise=True, full=True)[0::2]
+		colors.extend(rainbow(num_vals, start_col='#6EA31E', clockwise=True, full=True)[1::2])
 		new_col_dict = {k:v for k, v in zip(all_vals, colors)}
 
 		# add to the color dictionary
@@ -511,7 +561,7 @@ class substrate(_DrawingBaseClass):
 		self.subst_index = {k:v for k,v in zip(self.all_subst, range(len(self.indexes_used)+1, len(self.all_subst)+len(self.indexes_used)+1))}
 
 		# assign a color for each substrate
-		subst_color = {k:v for k,v in zip(self.all_subst, scales.rainbow(len(self.all_subst)))}
+		subst_color = {k:v for k,v in zip(self.all_subst, rainbow(len(self.all_subst)))}
 
 
 		# add the substrate row labels
