@@ -4,6 +4,10 @@ data/raw_external/*
 !data/raw_external/SwissProt-2020_02-protein-evidence.tsv
 
 data/intermediate/*
+!data/intermediate/README.md
+!data/intermediate/brenda_2017_1/
+!data/intermediate/brenda_2019_2/
+!data/intermediate/BRENDA_for_paper/
 
 data/intermediate/brenda_2017_1/*
 !data/intermediate/brenda_2017_1/1_1_3_15_BRENDA_sequences_filtered_2017_1.fasta
@@ -14,7 +18,8 @@ data/intermediate/brenda_2019_2/*
 !data/intermediate/brenda_2019_2/1_1_3_15_BRENDA_sequences_filtered_2019_2_unirep.zip
 
 data/intermediate/BRENDA_for_paper/*
-!data/intermediate/README.md
+!data/intermediate/BRENDA_for_paper/parsed_info.zip
+
 
 data/final/brenda_2019_2/all_brenda_domain_data.tsv
 
