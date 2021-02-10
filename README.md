@@ -1,7 +1,7 @@
 # Experimental exploration of the enzyme class EC 1.1.3.15
 Code used in the study outlined in our pre-print "Experimental investigation of enzyme functional annotations reveals extensive annotation error" (https://www.biorxiv.org/content/10.1101/2020.12.18.423474v1). The code is free to use and modify under GPLv3, but we do ask that you cite our article if you make use of it.
 
-![Figure 2](/results/figures/figure2_ela.png.png)
+![Figure 2](/results/figures/figure2_ela.png)
 
 ## Requirements and usage
 The scripts in this repository are in the form of Jupyter Notebooks and rely on Python (3.7). A full list of required packages, and their versions, are included in the `./code/environment.yml` file. This file can be used as a reference to manually install the libraries using pip, but it is by far easier to make use of Miniconda (https://docs.conda.io) to create an environment with all the libraries inside.
@@ -11,7 +11,7 @@ conda env create -f envrionment.yml
 conda env activate annotation_error
 ```
 
-The Notebooks are abundantly annotated and should hopefully be self-explanatory. All data files needed to produce the publication figures (`./code/2_anlyze_data/1_analyze_1.1.3.15.ipynb`) are included in the respository. This notebook is computationally light. To re-run the full bioinformatic analsis on BRENDA (`./code/1_prepare_data/`) is computationally expensive and takes about one week on a machine with 12 cores. Additionally, the full analysis requires the downloading of some data files from the Zenodo data repository (). The downloaded should be carried out automatically when running the notebooks. *A pre-requisite for this* is that your system has `wget` and `unzip` installed (typically available in Unix systems). An alternative is to manually download the files and extract them.
+The Notebooks are abundantly annotated and should hopefully be self-explanatory. All data files needed to produce the publication figures (`./code/2_anlyze_data/1_analyze_1.1.3.15.ipynb`) are included in the respository. This notebook is computationally light. To re-run the full bioinformatic analysis on BRENDA (`./code/1_prepare_data/`) is computationally expensive and takes about one week on a machine with 12 cores. Additionally, the full analysis requires the downloading of some data files from the Zenodo data repository (http://doi.org/10.5281/zenodo.4518801). The downloaded should be carried out automatically when running the notebooks. **A pre-requisite for this** is that your system has `wget` and `unzip` installed (typically available in Unix systems). An alternative is to manually download the files and extract them.
 
 
 Finally, the analysis relies on accessory code from some of our other repositories (https://github.com/EngqvistLab/orgtools, https://github.com/EngqvistLab/brenparse, https://github.com/EngqvistLab/UniRep50, https://github.com/mengqvist/wsvg). These will be automatically installed if using Miniconda and the environment.yml file.
