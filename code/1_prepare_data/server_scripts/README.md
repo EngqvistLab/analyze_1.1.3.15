@@ -1,1 +1,2 @@
-### Title
+### Server scripts
+These scripts were used to speed up computation on a local HPC cluster. They are essentially code copied out of the notebooks. There are many builtin assumptions about which libraries are installed and which scheduler is used. The bash scripts will therefore need to be adapted to your local conditions before running. However, it is perfectly viable to ignore this scripts and simply carry out the entire analysis using the jupyter notebooks provided in the folder below.
