@@ -1,4 +1,4 @@
-### Title
+### Code
 This folder contains jupyter-notebooks to run the bioinformatic analysis and generating figures for the article. The simplest way to ensure that all required libraries are installed is to make use of Miniconda (https://docs.conda.io/) and install libraries using the provided environment file.
 
 ```bash
